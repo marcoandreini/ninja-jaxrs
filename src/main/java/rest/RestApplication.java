@@ -11,6 +11,15 @@ import com.google.inject.Injector;
 
 public class RestApplication extends ResourceConfig {
 	
+	public static class InjectorWrapper {
+		static Injector injector;
+		
+		@Inject // ugly!
+		InjectorWrapper(Injector injector) {
+			InjectorWrapper.injector = injector;
+		}
+	}
+	
 	@Inject
 	public RestApplication(ServiceLocator serviceLocator) {
 		packages("rest");
@@ -18,6 +27,6 @@ public class RestApplication extends ResourceConfig {
         GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
         GuiceIntoHK2Bridge guiceBridge = serviceLocator
         		.getService(GuiceIntoHK2Bridge.class);
-        // guiceBridge.bridgeGuiceInjector();		
+        guiceBridge.bridgeGuiceInjector(InjectorWrapper.injector);
 	}
 }
